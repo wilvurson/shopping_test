@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Minimal Shop</title>
+    <style>
+      :root {
+        --bg: #0f172a; /* slate-900 */
+        --panel: #111827; /* gray-900 */
+        --muted: #94a3b8; /* slate-400 */
+        --text: #e5e7eb; /* gray-200 */
+        --accent: #22c55e; /* green-500 */
+        --card: #0b1222; /* dark card */
+        --ring: #334155; /* slate-700 */
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial,
+          sans-serif;
+        background: linear-gradient(180deg, var(--bg), #020617);
+        color: var(--text);
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      img {
+        max-width: 100%;
+        display: block;
+      }
+
+      /* Layout */
+      .container {
+        max-width: 1100px;
+        margin-inline: auto;
+        padding: 0 1rem;
+      }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        background: rgba(2, 6, 23, 0.6);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid #1f2937;
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.9rem 0;
+      }
+      .brand {
+        display: flex;
+        gap: 0.6rem;
+        align-items: center;
+        font-weight: 700;
+      }
+      .dot {
+        width: 0.75rem;
+        height: 0.75rem;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #4ade80, #22d3ee);
+      }
+      .search {
+        flex: 1;
+        max-width: 520px;
+        margin: 0 1rem;
+        position: relative;
+      }
+      .search input {
+        width: 100%;
+        background: #0b1222;
+        border: 1px solid var(--ring);
+        border-radius: 12px;
+        padding: 0.7rem 2.5rem 0.7rem 0.9rem;
+        color: var(--text);
+      }
+      .search button {
+        position: absolute;
+        right: 0.25rem;
+        top: 0.25rem;
+        bottom: 0.25rem;
+        border: 0;
+        border-radius: 10px;
+        padding: 0 0.75rem;
+        background: var(--accent);
+        color: #06220f;
+        font-weight: 700;
+      }
+      .actions {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+      }
+      .pill {
+        padding: 0.55rem 0.8rem;
+        border: 1px solid var(--ring);
+        border-radius: 999px;
+        color: var(--muted);
+      }
+      .cart {
+        position: relative;
+      }
+      .badge {
+        position: absolute;
+        right: -6px;
+        top: -6px;
+        background: var(--accent);
+        color: #06220f;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        line-height: 1;
+        padding: 0.25rem 0.4rem;
+        font-weight: 800;
+        border: 2px solid #0b1222;
+      }
+
+      /* Hero */
+      .hero {
+        padding: 2.2rem 0 1.2rem;
+      }
+      .hero .box {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: 1.3fr 0.7fr;
+      }
+      .hero-card {
+        background: radial-gradient(
+            1200px 220px at 10% 0%,
+            rgba(34, 197, 94, 0.15),
+            transparent
+          ),
+          #0b1222;
+        border: 1px solid var(--ring);
+        border-radius: 20px;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+      }
+      .hero-copy {
+        padding: 2rem;
+      }
+      .hero-copy h1 {
+        margin: 0.1rem 0 0;
+        font-size: clamp(1.25rem, 2.5vw, 2rem);
+      }
+      .hero-copy p {
+        color: var(--muted);
+        margin: 0.6rem 0 1rem;
+      }
+      .hero-copy .cta {
+        display: flex;
+        gap: 0.6rem;
+      }
+      .hero-copy .cta a {
+        display: inline-block;
+        padding: 0.7rem 1rem;
+        border-radius: 12px;
+        font-weight: 700;
+        border: 1px solid var(--ring);
+      }
+      .hero-copy .cta a.primary {
+        background: var(--accent);
+        color: #06220f;
+        border-color: transparent;
+      }
+      .hero-img {
+        background: linear-gradient(180deg, #0a0f1c, #0b1222);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .hero-img img {
+        width: 88%;
+        filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+      }
+
+      .side-card {
+        background: linear-gradient(180deg, #0b1222, #0a0f1c);
+        border: 1px solid var(--ring);
+        border-radius: 20px;
+        padding: 1rem 1.1rem;
+      }
+      .side-card h3 {
+        margin: 0.2rem 0 0.4rem;
+        font-size: 1rem;
+      }
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+      .tag {
+        border: 1px solid var(--ring);
+        padding: 0.45rem 0.6rem;
+        border-radius: 10px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      /* Products */
+      .section {
+        padding: 1.2rem 0;
+      }
+      .section h2 {
+        font-size: 1.1rem;
+        margin: 0 0 0.7rem;
+        color: #cbd5e1;
+      }
+      .grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--ring);
+        border-radius: 18px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .thumb {
+        aspect-ratio: 4/3;
+        background: #0a0f1c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .info {
+        padding: 0.9rem;
+      }
+      .title {
+        font-weight: 700;
+        font-size: 1rem;
+        margin: 0 0 0.25rem;
+      }
+      .desc {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin: 0 0 0.6rem;
+      }
+      .price-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .price {
+        font-weight: 800;
+      }
+      .btn {
+        display: inline-block;
+        margin-top: 0.7rem;
+        padding: 0.55rem 0.8rem;
+        border-radius: 12px;
+        border: 1px solid var(--ring);
+        text-align: center;
+      }
+      .btn.full {
+        width: 100%;
+        background: linear-gradient(135deg, #22c55e, #14b8a6);
+        color: #06220f;
+        font-weight: 800;
+        border: 0;
+      }
+
+      /* Footer */
+      footer {
+        margin-top: 2rem;
+        border-top: 1px solid var(--ring);
+        padding: 1rem 0;
+        color: var(--muted);
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .hero .box {
+          grid-template-columns: 1fr;
+        }
+        .hero-card {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 640px) {
+        .grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .search {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container nav" aria-label="Top navigation">
+        <a class="brand" href="#">
+          <span class="dot" aria-hidden="true"></span>
+          <span>Minimal Shop</span>
+        </a>
+        <form class="search" role="search" aria-label="Search products">
+          <input
+            type="search"
+            placeholder="Search products…"
+            aria-label="Search"
+          />
+          <button type="button" aria-label="Search">Go</button>
+        </form>
+        <div class="actions">
+          <a class="pill" href="#">Sign in</a>
+          <a class="pill cart" href="#" aria-label="Cart">
+            Cart
+            <span class="badge" aria-label="items in cart">2</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="container hero" aria-labelledby="hero-title">
+        <div class="box">
+          <article class="hero-card">
+            <div class="hero-copy">
+              <p class="pill" style="display: inline-block">
+                NEW • Summer Sale
+              </p>
+              <h1 id="hero-title">
+                Upgrade your space with clean, modern essentials
+              </h1>
+              <p>
+                Simple, responsive e‑commerce layout with semantic HTML and zero
+                JavaScript. Swap images and text to make it yours.
+              </p>
+              <div class="cta">
+                <a class="primary" href="#products">Shop now</a>
+                <a href="#categories">Browse categories</a>
+              </div>
+            </div>
+            <div class="hero-img" aria-hidden="true">
+              <img
+                alt="Featured product collage"
+                src="https://picsum.photos/seed/hero/800/600"
+              />
+            </div>
+          </article>
+
+          <!-- categories -->
+          <aside class="side-card" id="categories">
+            <h3>Popular categories</h3>
+            <div class="tags"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section
+        class="container section"
+        id="products"
+        aria-labelledby="products-title"
+      >
+        <h2 id="products-title">Featured products</h2>
+        <div class="grid"></div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <small
+          >© <span id="y"></span> Minimal Shop — made with HTML & CSS
+          only.</small
+        >
+      </div>
+    </footer>
+
+    <script>
+      // Optional: just set the year. No other JS needed.
+      document.getElementById("y").textContent = new Date().getFullYear();
+      document.getElementById("categories")
+
+      const grid_el = document.querySelector(".grid");
+
+      fetch("https://dummyjson.com/products")
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+
+          for (const product of data.products) {
+            grid_el.innerHTML += `
+        <article class="card" aria-label="">
+            <div class="thumb">
+              <img
+                alt="Smart LED Bulb"
+                src="${product.thumbnail}"
+              />
+            </div>
+            <div class="info">
+              <h3 class="title">${product.title}</h3>
+              <p class="desc">${product.description}</p>
+              <div class="price-row">
+                <span class="price">${product.price}</span>
+                <span class="muted">In stock</span>
+              </div>
+              <a
+                class="btn full"
+                href="#"
+                aria-label="Add Smart LED Bulb to cart"
+                >Add to cart</a
+              >
+            </div>
+          </article>
+          `;
+          }
+        });
+
+        const tags = document.querySelector(".tags")
+
+        fetch('https://dummyjson.com/products/categories')
+        .then(res => res.json())
+        .then((data) => {
+          console.log(data);
+          
+          for (const categories of data) {
+            tags.innerHTML += `
+              <a class="tag" href="#">${categories.name}</a>
+              `
+          }
+        });
+
+        
+
+        fetch('https://dummyjson.com/products/search?q=phone')
+        .then(res => res.json())
+        .then(console.log);
+    </script>
+  </body>
+</html>

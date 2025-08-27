@@ -95,4 +95,5 @@ searchButton.addEventListener("click", () => {
     .catch(() => {
       grid_el.innerHTML = `<p>Category "${category}" not found.</p>`;
     });
-});
+})
+
